@@ -27,6 +27,11 @@ CGFloat const kJotRelativeMinStrokeWidth = 0.4f;
 @property (nonatomic, assign) CGFloat lastVelocity;
 @property (nonatomic, assign) CGFloat lastWidth;
 @property (nonatomic, assign) CGFloat initialVelocity;
+@property (nonatomic, assign) CGFloat minX;
+@property (nonatomic, assign) CGFloat minY;
+@property (nonatomic, assign) CGFloat maxX;
+@property (nonatomic, assign) CGFloat maxY;
+@property (nonatomic, assign) BOOL boundBoxValidated;   // make sure path is drawn
 
 @end
 
@@ -51,6 +56,7 @@ CGFloat const kJotRelativeMinStrokeWidth = 0.4f;
         _lastWidth = _strokeWidth;
         
         self.userInteractionEnabled = NO;
+        [self invalidateBoundBox];
     }
     
     return self;
@@ -69,6 +75,7 @@ CGFloat const kJotRelativeMinStrokeWidth = 0.4f;
     [self.pointsArray removeAllObjects];
     self.lastVelocity = self.initialVelocity;
     self.lastWidth = self.strokeWidth;
+    [self invalidateBoundBox];
     
     [UIView transitionWithView:self duration:0.2f
                        options:UIViewAnimationOptionTransitionCrossDissolve
@@ -107,7 +114,7 @@ CGFloat const kJotRelativeMinStrokeWidth = 0.4f;
     [self.pointsArray addObject:[JotTouchPoint withPoint:touchPoint]];
     
     if (self.pointsCounter == 4) {
-        
+
         self.pointsArray[3] = [JotTouchPoint withPoint:CGPointMake(([self.pointsArray[2] CGPointValue].x + [self.pointsArray[4] CGPointValue].x)/2.f,
                                                                    ([self.pointsArray[2] CGPointValue].y + [self.pointsArray[4] CGPointValue].y)/2.f)];
         
@@ -137,10 +144,12 @@ CGFloat const kJotRelativeMinStrokeWidth = 0.4f;
         
         [self drawBitmap];
         
+        [self findBoundingBox];
         [self.pointsArray removeLastObject];
         [self.pointsArray removeLastObject];
         [self.pointsArray removeLastObject];
         self.pointsCounter = 1;
+        
     }
 }
 
@@ -150,6 +159,7 @@ CGFloat const kJotRelativeMinStrokeWidth = 0.4f;
     
     self.lastVelocity = self.initialVelocity;
     self.lastWidth = self.strokeWidth;
+    self.boundBox = CGRectMake(_minX, _minY, _maxX - _minX, _maxY - _minY);
 }
 
 #pragma mark - Drawing
@@ -248,6 +258,34 @@ CGFloat const kJotRelativeMinStrokeWidth = 0.4f;
             [[(JotTouchPoint *)path strokeColor] setFill];
             [JotTouchBezier jotDrawBezierPoint:[(JotTouchPoint *)path CGPointValue]
                                      withWidth:[(JotTouchPoint *)path strokeWidth]];
+        }
+    }
+}
+
+#pragma mark Find Bounding Box
+-(void) invalidateBoundBox {
+    _minX = CGFLOAT_MAX;
+    _minY = CGFLOAT_MAX;
+    _maxX = CGFLOAT_MIN;
+    _maxY = CGFLOAT_MIN;
+    _boundBoxValidated = NO;
+}
+-(void) findBoundingBox {
+    if (self.pointsArray.count == 5) {
+        _boundBoxValidated = YES;
+        for (JotTouchPoint *point in self.pointsArray) {
+            if (point.CGPointValue.x < _minX) {
+                _minX = point.CGPointValue.x;
+            }
+            if (point.CGPointValue.x > _maxX) {
+                _maxX = point.CGPointValue.x;
+            }
+            if (point.CGPointValue.y < _minY) {
+                _minY = point.CGPointValue.y;
+            }
+            if (point.CGPointValue.y > _maxY) {
+                _maxY = point.CGPointValue.y;
+            }
         }
     }
 }

@@ -229,4 +229,6 @@ typedef NS_ENUM(NSUInteger, JotViewState){
  */
 - (void)jotViewController:(JotViewController *)jotViewController isEditingText:(BOOL)isEditing;
 
+- (void) boundingRect:(CGRect) rect;
+
 @end

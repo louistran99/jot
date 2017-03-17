@@ -349,6 +349,10 @@
 {
     if (self.state == JotViewStateDrawing) {
         [self.drawView drawTouchEnded];
+        if ([self.delegate respondsToSelector:@selector(boundingRect:)]) {
+            CGRect rect = CGRectZero;
+            [self.delegate boundingRect:rect];
+        }
     }
 }
 

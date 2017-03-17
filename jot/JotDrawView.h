@@ -14,6 +14,7 @@
  *  in a JotViewController instance to configure this private class.
  */
 @interface JotDrawView : UIView
+@property (nonatomic, assign) CGRect boundBox;
 
 /**
  *  Set to YES if you want the stroke width to be constant,
