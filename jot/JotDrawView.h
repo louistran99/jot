@@ -15,6 +15,7 @@
  */
 @interface JotDrawView : UIView
 @property (nonatomic, assign) CGRect boundBox;
+@property (nonatomic, strong) UIColor *fillColor;
 
 /**
  *  Set to YES if you want the stroke width to be constant,

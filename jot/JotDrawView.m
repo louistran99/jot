@@ -159,7 +159,9 @@ CGFloat const kJotRelativeMinStrokeWidth = 0.4f;
     
     self.lastVelocity = self.initialVelocity;
     self.lastWidth = self.strokeWidth;
-    self.boundBox = CGRectMake(_minX, _minY, _maxX - _minX, _maxY - _minY);
+    CGRect rect = _boundBoxValidated ? CGRectMake(_minX, _minY, _maxX - _minX, _maxY - _minY) : CGRectZero;
+    self.boundBox = rect;
+    [self fillPath];
 }
 
 #pragma mark - Drawing
@@ -206,6 +208,10 @@ CGFloat const kJotRelativeMinStrokeWidth = 0.4f;
 {
     _strokeColor = strokeColor;
     self.bezierPath = nil;
+}
+
+-(void) setFillColor:(UIColor *)fillColor {
+    _fillColor = fillColor;
 }
 
 - (JotTouchBezier *)bezierPath
@@ -260,6 +266,33 @@ CGFloat const kJotRelativeMinStrokeWidth = 0.4f;
                                      withWidth:[(JotTouchPoint *)path strokeWidth]];
         }
     }
+}
+
+-(void) fillPath {
+    UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, [UIScreen mainScreen].scale);
+    
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGFloat red = 0.0f;
+    CGFloat green = 0.0f;
+    CGFloat blue = 0.0f;
+    CGFloat alpha = 0.0f;
+    [_fillColor getRed:&red green:&green blue:&blue alpha:&alpha];
+    CGContextSetRGBFillColor(context, red, green, blue, alpha);
+    
+    CGContextBeginPath(context);
+    JotTouchBezier *bezier = (JotTouchBezier*)[self.pathsArray objectAtIndex:0];
+    CGContextMoveToPoint(context, bezier.startPoint.x, bezier.startPoint.y);
+    [self.pathsArray removeLastObject];
+    for (JotTouchBezier *point in self.pathsArray) {
+        CGContextAddCurveToPoint(context, point.controlPoint1.x, point.controlPoint1.y, point.controlPoint2.x, point.controlPoint2.y, point.endPoint.x, point.endPoint.y);
+    }
+    CGContextClosePath(context);
+    CGContextFillPath(context);
+    
+    self.cachedImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    [self setNeedsDisplay];
+
 }
 
 #pragma mark Find Bounding Box

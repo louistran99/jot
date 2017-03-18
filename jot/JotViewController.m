@@ -227,6 +227,13 @@
     }
 }
 
+-(void) setFillColor:(UIColor *)fillColor {
+    if (_fillColor != fillColor) {
+        _fillColor = fillColor;
+        self.drawView.fillColor = fillColor;
+    }
+}
+
 - (void)setDrawingStrokeWidth:(CGFloat)drawingStrokeWidth
 {
     if (_drawingStrokeWidth != drawingStrokeWidth) {
@@ -350,7 +357,7 @@
     if (self.state == JotViewStateDrawing) {
         [self.drawView drawTouchEnded];
         if ([self.delegate respondsToSelector:@selector(boundingRect:)]) {
-            CGRect rect = CGRectZero;
+            CGRect rect = self.drawView.boundBox;
             [self.delegate boundingRect:rect];
         }
     }

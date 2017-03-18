@@ -43,6 +43,7 @@ NSString * const kSaveImageName = @"";
         self.jotViewController.fitOriginalFontSizeToViewWidth = YES;
         self.jotViewController.textAlignment = NSTextAlignmentLeft;
         self.jotViewController.drawingColor = [UIColor cyanColor];
+        self.jotViewController.fillColor = [UIColor colorWithRed:1.0f green:0.0f blue:0.0f alpha:0.5f];
         
         _saveButton = [UIButton new];
         self.saveButton.titleLabel.font = [UIFont fontWithName:@"FontAwesome" size:24.f];
@@ -172,4 +173,7 @@ NSString * const kSaveImageName = @"";
     self.toggleDrawingButton.hidden = isEditing;
 }
 
+-(void) boundingRect:(CGRect)rect {
+    NSLog(@"%1.1f, %1.1f",rect.size.width, rect.size.height);
+}
 @end

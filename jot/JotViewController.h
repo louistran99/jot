@@ -59,6 +59,7 @@ typedef NS_ENUM(NSUInteger, JotViewState){
  */
 @property (nonatomic, weak) id <JotViewControllerDelegate> delegate;
 
+@property (nonatomic, assign) UIColor *fillColor;
 /**
  *  The state of the JotViewController. Change the state between JotViewStateDrawing
  *  and JotViewStateText in response to your own editing controls to toggle between
