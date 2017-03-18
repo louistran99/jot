@@ -289,8 +289,6 @@ CGFloat const kJotRelativeMinStrokeWidth = 0.4f;
     }
     CGContextClosePath(context);
     CGContextDrawPath(context, kCGPathFillStroke);
-//    CGContextFillPath(context);
-//    CGContextStrokePath(context);
     self.cachedImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     [self setNeedsDisplay];
