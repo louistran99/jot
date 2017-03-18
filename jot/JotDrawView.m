@@ -278,7 +278,8 @@ CGFloat const kJotRelativeMinStrokeWidth = 0.4f;
     CGFloat alpha = 0.0f;
     [_fillColor getRed:&red green:&green blue:&blue alpha:&alpha];
     CGContextSetRGBFillColor(context, red, green, blue, alpha);
-    
+    [_strokeColor getRed:&red green:&green blue:&blue alpha:&alpha];
+    CGContextSetRGBStrokeColor(context, red, green, blue, alpha);
     CGContextBeginPath(context);
     JotTouchBezier *bezier = (JotTouchBezier*)[self.pathsArray objectAtIndex:0];
     CGContextMoveToPoint(context, bezier.startPoint.x, bezier.startPoint.y);
@@ -287,12 +288,14 @@ CGFloat const kJotRelativeMinStrokeWidth = 0.4f;
         CGContextAddCurveToPoint(context, point.controlPoint1.x, point.controlPoint1.y, point.controlPoint2.x, point.controlPoint2.y, point.endPoint.x, point.endPoint.y);
     }
     CGContextClosePath(context);
-    CGContextFillPath(context);
-    
+    CGContextDrawPath(context, kCGPathFillStroke);
+//    CGContextFillPath(context);
+//    CGContextStrokePath(context);
     self.cachedImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     [self setNeedsDisplay];
-
+    [self.pathsArray removeAllObjects];
+    [self invalidateBoundBox];
 }
 
 #pragma mark Find Bounding Box
