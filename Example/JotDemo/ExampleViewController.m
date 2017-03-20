@@ -45,6 +45,7 @@ NSString * const kSaveImageName = @"";
         self.jotViewController.drawingColor = [UIColor cyanColor];
         self.jotViewController.fillColor = [UIColor colorWithRed:1.0f green:0.0f blue:0.0f alpha:0.125f];
         
+        
         _saveButton = [UIButton new];
         self.saveButton.titleLabel.font = [UIFont fontWithName:@"FontAwesome" size:24.f];
         [self.saveButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
@@ -96,12 +97,12 @@ NSString * const kSaveImageName = @"";
         make.top.equalTo(self.view).offset(4.f);
     }];
     
-    [self.view addSubview:self.clearButton];
-    [self.clearButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.height.and.width.equalTo(@44);
-        make.left.equalTo(self.view).offset(4.f);
-        make.top.equalTo(self.view).offset(4.f);
-    }];
+//    [self.view addSubview:self.clearButton];
+//    [self.clearButton mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.height.and.width.equalTo(@44);
+//        make.left.equalTo(self.view).offset(4.f);
+//        make.top.equalTo(self.view).offset(60.f);
+//    }];
     
     [self.view addSubview:self.toggleDrawingButton];
     [self.toggleDrawingButton mas_makeConstraints:^(MASConstraintMaker *make) {

@@ -24,6 +24,7 @@
 @property (nonatomic, strong) JotDrawView *drawView;
 @property (nonatomic, strong) JotTextEditView *textEditView;
 @property (nonatomic, strong) JotTextView *textView;
+@property (nonatomic, strong) UIButton *clearButton;
 
 @end
 
@@ -66,6 +67,17 @@
         
         _tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGesture:)];
         self.tapRecognizer.delegate = self;
+        
+
+        _clearButton = [UIButton new];
+        self.clearButton.titleLabel.font = [UIFont fontWithName:@"FontAwesome" size:24.f];
+        [self.clearButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+        [self.clearButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateHighlighted];
+        [self.clearButton setTitle:@"X" forState:UIControlStateNormal];
+        [self.clearButton addTarget:self
+                             action:@selector(clearAll)
+                   forControlEvents:UIControlEventTouchUpInside];
+        
     }
     
     return self;
@@ -108,6 +120,14 @@
     [self.drawingContainer addGestureRecognizer:self.panRecognizer];
     [self.drawingContainer addGestureRecognizer:self.rotationRecognizer];
     [self.drawingContainer addGestureRecognizer:self.pinchRecognizer];
+    
+    [self.view addSubview:self.clearButton];
+    [self.clearButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.height.and.width.equalTo(@44);
+        make.left.equalTo(self.view).offset(4.f);
+        make.top.equalTo(self.view).offset(60.f);
+    }];
+    
 }
 
 #pragma mark - Properties
@@ -256,6 +276,9 @@
 {
     [self clearDrawing];
     [self clearText];
+    if ([self.delegate respondsToSelector:@selector(dismissSelf)]) {
+        [self.delegate dismissSelf];
+    }
 }
 
 - (void)clearDrawing

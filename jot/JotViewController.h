@@ -232,4 +232,6 @@ typedef NS_ENUM(NSUInteger, JotViewState){
 
 - (void) boundingRect:(CGRect) rect;
 
+- (void) dismissSelf;
+
 @end
